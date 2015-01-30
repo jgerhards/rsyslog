@@ -123,6 +123,7 @@ struct instanceConf_s {
 	int iKeepAliveTime;
 	int bEmitMsgOnClose;
 	int bSuppOctetFram;		/* support octet-counted framing? */
+	int bSPFramingFix;
 	int iAddtlFrameDelim;
 	uint8_t compressionMode;
 	uchar *pszBindPort;		/* port to bind to */
@@ -213,6 +214,7 @@ struct ptcpsrv_s {
 	sbool bKeepAlive;		/* support keep-alive packets */
 	sbool bEmitMsgOnClose;
 	sbool bSuppOctetFram;
+	sbool bSPFramingFix;
 	ratelimit_t *ratelimiter;
 };
 
@@ -231,6 +233,7 @@ struct ptcpsess_s {
 	int iMsg;		 /* index of next char to store in msg */
 	int bAtStrtOfFram;	/* are we at the very beginning of a new frame? */
 	sbool bSuppOctetFram;	/**< copy from listener, to speed up access */
+	sbool bSPFramingFix;
 	enum {
 		eAtStrtFram,
 		eInOctetCnt,
@@ -252,6 +255,7 @@ struct ptcplstn_s {
 	ptcplstn_t *prev, *next;
 	int sock;
 	sbool bSuppOctetFram;
+	sbool bSPFramingFix
 	epolld_t *epd;
 	statsobj_t *stats;	/* listener stats */
 	intctr_t rcvdBytes;
@@ -1027,6 +1031,7 @@ addLstn(ptcpsrv_t *pSrv, int sock, int isIPv6)
 	CHKmalloc(pLstn = calloc(1, sizeof(ptcplstn_t)));
 	pLstn->pSrv = pSrv;
 	pLstn->bSuppOctetFram = pSrv->bSuppOctetFram;
+	pLstn->bSPFramingFix = pSvr->bSPFramingFix;
 	pLstn->sock = sock;
 	/* support statistics gathering */
 	uchar *inputname;
@@ -1091,6 +1096,7 @@ addSess(ptcplstn_t *pLstn, int sock, prop_t *peerName, prop_t *peerIP)
 	pSess->pLstn = pLstn;
 	pSess->sock = sock;
 	pSess->bSuppOctetFram = pLstn->bSuppOctetFram;
+	pSess->bSPFramingFix = pLstn->bSPFramingFix;
 	pSess->inputState = eAtStrtFram;
 	pSess->iMsg = 0;
 	pSess->bzInitDone = 0;
@@ -1216,6 +1222,7 @@ createInstance(instanceConf_t **pinst)
 	inst->pszBindRuleset = NULL;
 	inst->pszInputName = NULL;
 	inst->bSuppOctetFram = 1;
+	inst->bSPFramingFix = 0;
 	inst->bKeepAlive = 0;
 	inst->iKeepAliveIntvl = 0;
 	inst->iKeepAliveProbes = 0;
@@ -1301,6 +1308,7 @@ addListner(modConfData_t __attribute__((unused)) *modConf, instanceConf_t *inst)
 	pSrv->pSess = NULL;
 	pSrv->pLstn = NULL;
 	pSrv->bSuppOctetFram = inst->bSuppOctetFram;
+	pSrv->bSPFramingFix = inst->bSPFramingFix;
 	pSrv->bKeepAlive = inst->bKeepAlive;
 	pSrv->iKeepAliveIntvl = inst->iKeepAliveTime;
 	pSrv->iKeepAliveProbes = inst->iKeepAliveProbes;
