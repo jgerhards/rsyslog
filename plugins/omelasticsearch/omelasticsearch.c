@@ -339,7 +339,7 @@ incrementServerIndex(wrkrInstanceData_t *pWrkrData)
 static rsRetVal
 checkConn(wrkrInstanceData_t *pWrkrData)
 {
-#	define HEALTH_URI "_cat/health"
+#	define HEALTH_URI "_cat/_mapping/health"
 	CURL *curl;
 	CURLcode res;
 	es_str_t *urlBuf;
