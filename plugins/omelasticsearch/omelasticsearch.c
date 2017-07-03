@@ -90,6 +90,7 @@ typedef struct _instanceData {
 	uchar **serverBaseUrls;
 	int numServers;
 	long healthCheckTimeout;
+	uchar *healthCheckUri;
 	uchar *uid;
 	uchar *pwd;
 	uchar *authBuf;
@@ -135,6 +136,7 @@ static struct cnfparamdescr actpdescr[] = {
 	{ "server", eCmdHdlrArray, 0 },
 	{ "serverport", eCmdHdlrInt, 0 },
 	{ "healthchecktimeout", eCmdHdlrInt, 0 },
+	{ "healthcheckuri", eCmdHdlrString, 0 },
 	{ "uid", eCmdHdlrGetWord, 0 },
 	{ "pwd", eCmdHdlrGetWord, 0 },
 	{ "searchindex", eCmdHdlrGetWord, 0 },
@@ -339,16 +341,21 @@ incrementServerIndex(wrkrInstanceData_t *pWrkrData)
 static rsRetVal
 checkConn(wrkrInstanceData_t *pWrkrData)
 {
-#	define HEALTH_URI "_cat/_mapping/health"
 	CURL *curl;
 	CURLcode res;
 	es_str_t *urlBuf;
+	const char* healthUri;
 	char* healthUrl;
 	char* serverUrl;
 	int i;
 	int r;
 	DEFiRet;
 
+	if(pWrkrData->pData->healthCheckUri != NULL) {
+		healthUri = (const char*)pWrkrData->pData->healthCheckUri;
+	} else {
+		healthUri = "_cat/_mapping/health";
+	}
 	curl = pWrkrData->curlCheckConnHandle;
 	urlBuf = es_newStr(256);
 	if (urlBuf == NULL) {
@@ -361,7 +368,7 @@ checkConn(wrkrInstanceData_t *pWrkrData)
 
 		es_emptyStr(urlBuf);
 		r = es_addBuf(&urlBuf, serverUrl, strlen(serverUrl));
-		if(r == 0) r = es_addBuf(&urlBuf, HEALTH_URI, sizeof(HEALTH_URI)-1);
+		if(r == 0) r = es_addBuf(&urlBuf, healthUri, strlen(healthUri)-1);
 		if(r == 0) healthUrl = es_str2cstr(urlBuf, NULL);
 		if(r != 0 || healthUrl == NULL) {
 			DBGPRINTF("omelasticsearch: unable to allocate buffer for health check uri.\n");
@@ -1349,6 +1356,7 @@ setInstParamDefaults(instanceData *pData)
 	pData->serverBaseUrls = NULL;
 	pData->defaultPort = 9200;
 	pData->healthCheckTimeout = 3500;
+	pData->healthCheckUri = NULL;
 	pData->uid = NULL;
 	pData->pwd = NULL;
 	pData->authBuf = NULL;
@@ -1400,6 +1408,8 @@ CODESTARTnewActInst
 			pData->defaultPort = (int) pvals[i].val.d.n;
 		} else if(!strcmp(actpblk.descr[i].name, "healthchecktimeout")) {
 			pData->healthCheckTimeout = (long) pvals[i].val.d.n;
+		} else if(!strcmp(actpblk.descr[i].name, "healthcheckuri")) {
+			pData->healthCheckUri = (uchar*)es_str2cstr(pvals[i].val.d.estr, NULL);
 		} else if(!strcmp(actpblk.descr[i].name, "uid")) {
 			pData->uid = (uchar*)es_str2cstr(pvals[i].val.d.estr, NULL);
 		} else if(!strcmp(actpblk.descr[i].name, "pwd")) {
