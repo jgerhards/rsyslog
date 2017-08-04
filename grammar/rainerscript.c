@@ -1766,6 +1766,199 @@ rTrim(char *str)
 	return(estr);
 }
 
+static char*
+lTrimStr(char *str)
+{
+	int len = strlen(str);
+	int i;
+	char* freeStr = str; //needed later to free old string
+
+	for(i = 0; i < len; i++) {
+		if(str[i] != ' ') {
+			break;
+		}
+	}
+
+	if(i != (len - 1)) {
+		str = strdup(str + i);
+		free(freeStr);
+	}
+
+	return(str);
+}
+
+static char*
+rTrimStr(char *str)
+{
+	int len = strlen(str);
+	int i;
+	char* freeStr = str; //needed later to free old string
+
+	for(i = (len - 1); i > -1; i--) {
+		if(str[i] != ' ') {
+			break;
+		}
+	}
+
+	if(i != 0) {
+		str = strndup(str, (i + 1));
+		free(freeStr);
+	}
+
+	return(str);
+}
+
+static char
+findYear(int* num, int cmp)
+{
+	if(num[0] == 0) {
+		return 0;
+	} else if(num[2] == 0) {
+		return 2;
+	}
+
+	if(num[0] > cmp && num[2] < cmp) {
+		return 0;
+	} else if(num[0] < cmp && num[2] > cmp) {
+		return 2;
+	} else if(num[0] < cmp && num[2] < cmp) {
+		return 2;
+	} else {
+		return -2;
+	}
+}
+
+static int
+isLeapY(unsigned int i)
+{
+	if((i % 4) != 0) {
+		return 0;
+	}
+	if((i % 100) == 0) {
+		if((i % 400) == 0) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+static int
+isDate(char *str)
+{
+	unsigned num[3] = {0, 0, 0};
+	size_t len;
+	int cyc = 0;
+	int recSep = 0;
+	char d = -1;
+	char m = -1;
+	char y = -1;
+
+	str = lTrimStr(str);
+	str = rTrimStr(str);
+	len = strlen(str);
+
+	for(unsigned int i = 0; i < len; i++) {
+		switch(str[i]) {
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			num[cyc] = num[cyc] * 10 + (str[i] - '0');
+			recSep = 0;
+			break;
+		case '.':
+		case '/':
+		case '-':
+		case ' ':
+			if(!recSep) {
+				cyc++;
+				recSep = 1;
+			} else {
+				return 0;
+			}
+		default:
+			return 0;
+		}
+		if(cyc > 2) {
+			return 0;
+		}
+	}
+
+	if(num[1] < 1) { //2
+		return 0;
+	}
+
+	if(num[0] < 0 || num[2] < 0 || (num[0] == 0 && num[2] == 0)) {
+		return 0;
+	}
+
+	if(num[1] > 31) {//3
+		return 0;
+	}
+
+	if(num[1] > 12) {//4
+		y = findYear(num, 12);//5
+		if(y == -2) {
+			return 0;
+		}
+	} else {
+		y = findYear(num, 31);//5
+		if(y == -2) {
+			return 0;
+		}
+	}
+
+	if(num[1] > 12) {
+		if(y == 0) {
+			return 0;
+		} else {
+			m = 0;
+			d = 1;
+		}
+	} else {
+		m = 1;
+		d = 0;
+	}
+
+	if(num[d] > 28) {
+		switch(num[m]) {
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			if(num[d] > 31) {
+				return 0;
+			}
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			if(num[d] > 30) {
+				return 0;
+			}
+		case 2:
+			if(isLeapY(num[y]) && num[d] > 29) {
+				return 0;
+			} else if(num[d] > 28) {
+				return 0;
+			}
+		}
+	}
+
+	return 1;
+
+}
 
 static long long
 ipv42num(char *str)
