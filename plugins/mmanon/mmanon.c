@@ -195,16 +195,16 @@ CODESTARTnewActInst
 
 	if(pData->mode == SIMPLE_MODE) {
 		bHadBitsErr = 0;
-		if(pData->ipv4.bits < 8) {
+		if(pData->ipv4.bits < 8 && pData->ipv4.bits > -1) {
 			pData->ipv4.bits = 8;
 			bHadBitsErr = 1;
-		} else if(pData->ipv4.bits < 16) {
+		} else if(pData->ipv4.bits < 16 && pData->ipv4.bits > 8) {
 			pData->ipv4.bits = 16;
 			bHadBitsErr = 1;
-		} else if(pData->ipv4.bits < 24) {
+		} else if(pData->ipv4.bits < 24 && pData->ipv4.bits > 16) {
 			pData->ipv4.bits = 24;
 			bHadBitsErr = 1;
-		} else if(pData->ipv4.bits != 32) {
+		} else if((pData->ipv4.bits != 32 && pData->ipv4.bits > 24) || pData->ipv4.bits < 0) {
 			pData->ipv4.bits = 32;
 			bHadBitsErr = 1;
 		}
