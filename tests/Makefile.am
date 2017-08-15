@@ -239,6 +239,7 @@ TESTS +=  \
 	rscript_ne_var.sh \
 	mmanon-ipv4-recognition.sh \
 	rscript_num2ipv4.sh \
+	mmanon-rewrite-len.sh \
 	empty-prop-comparison.sh \
 	rs_optimizer_pri.sh \
 	cee_simple.sh \
@@ -826,6 +827,7 @@ EXTRA_DIST= \
 	rscript_ne_var.sh \
 	mmanon-ipv4-recognition.sh \
 	rscript_num2ipv4.sh \
+	mmanon-rewrite-len.sh \
 	testsuites/rscript_ne_var.conf \
 	rscript_eq.sh \
 	testsuites/rscript_eq.conf \
