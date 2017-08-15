@@ -304,17 +304,17 @@ anonip(instanceData *pData, uchar *msg, int *pLenMsg, int *idx)
 	/* got digit, let's see if ip */
 	ipstart[0] = i;
 	octet = getnum(msg, lenMsg, &i);
-	if(octet > 255 || msg[i] != '.') goto done;
+	if(octet > 255 || msg[i] != '.' || msg[i+1] > '9' || msg[i+1] < '0') goto done;
 	ipv4addr = octet << 24;
 	++i;
 	ipstart[1] = i;
 	octet = getnum(msg, lenMsg, &i);
-	if(octet > 255 || msg[i] != '.') goto done;
+	if(octet > 255 || msg[i] != '.' || msg[i+1] > '9' || msg[i+1] < '0') goto done;
 	ipv4addr |= octet << 16;
 	++i;
 	ipstart[2] = i;
 	octet = getnum(msg, lenMsg, &i);
-	if(octet > 255 || msg[i] != '.') goto done;
+	if(octet > 255 || msg[i] != '.' || msg[i+1] > '9' || msg[i+1] < '0') goto done;
 	ipv4addr |= octet << 8;
 	++i;
 	ipstart[3] = i;
