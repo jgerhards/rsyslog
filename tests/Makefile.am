@@ -257,7 +257,13 @@ TESTS +=  \
 	lookup_table_bad_configs.sh \
 	lookup_table_rscript_reload.sh \
 	lookup_table_rscript_reload_without_stub.sh \
-	multiple_lookup_tables.sh
+	multiple_lookup_tables.sh \
+	mmanon-simple-ipv4_bits-0.sh \
+	mmanon-simple-ipv4_bits-8.sh \
+	mmanon-simple-ipv4_bits-16.sh \
+	mmanon-simple-ipv4_bits-24.sh \
+	mmanon-simple-ipv4_bits-32.sh \
+	mmanon-simple-ipv4_bits--1.sh
 
 if ENABLE_IP
 TESTS += \
@@ -1286,6 +1292,12 @@ EXTRA_DIST= \
 	omruleset-queue.sh \
 	testsuites/omruleset-queue.conf \
 	badqi.sh \
+	mmanon-simple-ipv4_bits--1.sh \
+	mmanon-simple-ipv4_bits-0.sh \
+	mmanon-simple-ipv4_bits-8.sh \
+	mmanon-simple-ipv4_bits-16.sh \
+	mmanon-simple-ipv4_bits-24.sh \
+	mmanon-simple-ipv4_bits-32.sh \
 	testsuites/badqi.conf \
 	bad_qi/dbq.qi \
 	execonlyonce.sh \
