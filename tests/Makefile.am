@@ -865,6 +865,7 @@ endif
 
 if ENABLE_RELP
 TESTS += sndrcv_relp.sh \
+	 imrelp-crash-headerless-no-appname.sh \
 	 sndrcv_relp_rebind.sh \
 	 imrelp-basic.sh \
 	 imrelp-basic-oldstyle.sh \
@@ -1470,6 +1471,7 @@ EXTRA_DIST= \
 	glbl-oversizeMsg-truncate.sh \
 	glbl-oversizeMsg-split.sh \
 	sndrcv_relp.sh \
+	imrelp-crash-headerless-no-appname.sh \
 	sndrcv_relp_rebind.sh \
 	sndrcv_relp_tls_prio.sh \
 	sndrcv_relp_tls.sh \

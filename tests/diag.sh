@@ -30,7 +30,7 @@
 #                       used in tests that have a common driver where it
 #                       is too hard to set these options otherwise
 
-#valgrind="valgrind --malloc-fill=ff --free-fill=fe --log-fd=1"
+valgrind="valgrind --malloc-fill=ff --free-fill=fe --log-fd=1"
 
 # **** use the line below for very hard to find leaks! *****
 #valgrind="valgrind --leak-check=full --show-leak-kinds=all --malloc-fill=ff --free-fill=fe --log-fd=1"
