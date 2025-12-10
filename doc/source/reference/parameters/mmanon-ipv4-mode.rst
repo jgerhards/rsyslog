@@ -25,8 +25,8 @@ This parameter applies to :doc:`../../configuration/modules/mmanon`.
 
 Description
 -----------
-The available modes are ``simple``, ``random``, ``random-consistent``, and
-``zero``.
+The available modes are ``simple``, ``random``, ``random-consistent``,
+``random-consistent-unique``, and ``zero``.
 In simple mode, only octets as a whole can be anonymized and the length of the
 message is never changed. This means that when the last three octets of the
 address 10.1.12.123 are anonymized, the result will be 10.x.xx.xxx.
@@ -42,6 +42,9 @@ they both anonymize IP addresses by randomizing the last bits (any number)
 of a given address. However, while ``random`` mode assigns a new random IP
 address for every address in a message, ``random-consistent`` will assign
 the same randomized address to every instance of the same original address.
+``random-consistent-unique`` extends the consistent mode by regenerating the
+alias until it is unique so that no two different input addresses end up with
+the same anonymized value.
 
 The default ``zero`` mode will do full anonymization of any number of bits.
 It will also normalize the address, so that no information about the original
@@ -55,7 +58,7 @@ Input usage
 .. code-block:: rsyslog
 
    module(load="mmanon")
-   action(type="mmanon" ipv4.mode="random-consistent")
+   action(type="mmanon" ipv4.mode="random-consistent-unique")
 
 Legacy names (for reference)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
