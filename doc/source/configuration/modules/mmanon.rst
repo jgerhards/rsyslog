@@ -50,6 +50,11 @@ Action Parameters
 Parameters starting with 'IPv4.' will configure IPv4 anonymization,
 while 'IPv6.' parameters do the same for IPv6 anonymization.
 
+Use the ``random-consistent-unique`` modes when it is important that each
+original address receives a distinct anonymized value. This mode behaves like
+``random-consistent`` but retries anonymization until the replacement does not
+collide with any previously generated alias.
+
 .. list-table::
    :widths: 30 70
    :header-rows: 1
@@ -212,12 +217,12 @@ Anonymizing only ipv6 addresses
 
 Another option is to only anonymize IPv6 addresses. When doing this you have to
 disable IPv4 anonymization. This example will lead to only IPv6 addresses anonymized
-(using the random-consistent mode).
+(using the random mode).
 
 .. code-block:: none
 
    module(load="mmanon")
    action(type="omfile" file="/path/to/non-anon.log")
-   action(type="mmanon" ipv4.enable="off" ipv6.anonmode="random-consistent")
+   action(type="mmanon" ipv4.enable="off" ipv6.anonmode="random")
    action(type="omfile" file="/path/to/anon.log")
 
